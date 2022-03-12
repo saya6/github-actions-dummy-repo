@@ -7,8 +7,8 @@ jobs:
     name: Mi primer job
     runs-on: ubuntu-
     steps:
-    - name: Imprimir
-      env:
-        MI_VARIABLE: Hola mundo
-      run:
-        echo: $MI_VARIABLE
+      - name: Imprimir
+        env:
+          MI_VARIABLE: Hola mundo
+        run: |
+          echo: $MI_VARIABLE
