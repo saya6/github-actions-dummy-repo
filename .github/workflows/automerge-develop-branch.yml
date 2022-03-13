@@ -19,9 +19,6 @@ jobs:
     outputs:
       salida: ${{ steps.imprimir.outputs.respuesta }}
     steps:
-    - name: verifica que el commit tenga la palabra feature_terminado
-      if: ${{ contains(github.event.head_commit.message, 'feature_terminado') }}
-      run: echo "Terminacion de un feature branch encontrado"
     - name: Checkout de repositorio
       uses: actions/checkout@v2
     - name: Configuración de entorno de python
@@ -50,3 +47,27 @@ jobs:
       run: |
           coverage run -m unittest tests/test_persona.py
           coverage report -m
+
+  job3:
+    needs: Job2
+    name: mezcla de develop al branch actual
+    runs-on: ubuntu-latest
+    steps:
+    - name: Mezcla develop -> rama actual
+      uses: tukasz/direct-merge-action@master
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        source-branch: develop
+        target-branch: ${{ github.ref }}
+  
+  job4:
+    needs: Job3
+    name: mezcla del branch actual a develop
+    runs-on: ubuntu-latest
+    steps:
+    - name: Mezcla develop -> rama actual
+      uses: tukasz/direct-merge-action@master
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        source-branch: ${{ github.ref }}
+        target-branch: develop
