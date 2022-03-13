@@ -1,4 +1,4 @@
-name: automatiza el proceso de relase
+name: Automatiza el proceso de relase
 on:
   push:
     branches:
@@ -23,7 +23,7 @@ jobs:
       id: imprimirHash
       shell: bash
       run: |
-        echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+        echo "::set-output name=sha_short::${{ github.sha }}"
 
   job3:
     needs: Job2
@@ -31,10 +31,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: genera el branch de release
-      run: |
-      git checkout -b release-${{needs.Job2.outputs.hash}}
-      git push -f -u origin release-${{needs.Job2.outputs.hash}}
-
+      uses: peterjgrainger/action-create-branch@v2.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        branch: release-${{needs.Job2.outputs.hash}}
   job4:
     needs: Job3
     name: Pruebas
@@ -73,8 +74,8 @@ jobs:
           coverage run -m unittest tests/test_persona.py
           coverage report -m
 
-  job4:
-    needs: Job3
+  job5:
+    needs: Job4
     name: mezcla del branch actual del release a master
     runs-on: ubuntu-latest
     steps:

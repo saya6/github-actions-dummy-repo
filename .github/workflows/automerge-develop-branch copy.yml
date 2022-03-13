@@ -1,4 +1,4 @@
-name: Automerge de develop a un  branch de desarrollo
+name: Automerge de develop a un branch de desarrollo
 on:
   push:
     branches:
